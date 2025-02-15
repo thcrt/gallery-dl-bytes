@@ -83,7 +83,7 @@ print(job.metadata.get("text"))
 ### Set `gallery-dl` configuration
 
 > [!WARNING]  
-> CNote that not all configuration is supported. Options may be silently ignored. This feature is not yet complete.
+> Note that not all configuration is supported. Options may be silently ignored. This feature is not yet complete.
 
 ```python
 from gallery_dl_bytes import set_config
