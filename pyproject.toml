@@ -3,17 +3,34 @@ name = "gallery-dl-bytes"
 dynamic = ["version"]
 description = "API to download files directly to memory with gallery-dl"
 readme = "README.md"
+license = "GPL-2.0-only"
 authors = [
-    { name = "thcrt", email = "110127860+thcrt@users.noreply.github.com" }
+    { name = "thcrt", email = "110127860+thcrt@users.noreply.github.com" },
 ]
+keywords = ["image", "gallery", "downloader", "crawler", "scraper"]
 requires-python = ">=3.12"
-dependencies = [
-    "gallery-dl>=1.28.5",
+dependencies = ["gallery-dl>=1.28.5"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Software Development :: Libraries",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
 ]
 
 [project.urls]
-Source = "https://github.com/thcrt/gallery-dl-bytes"
-Issues = "https://github.com/thcrt/gallery-dl-bytes/issues"
+Source = "https://github.com/thcrt/gallery-dl-bytes/"
+Issues = "https://github.com/thcrt/gallery-dl-bytes/issues/"
+PyPI = "https://pypi.org/project/gallery-dl-bytes/"
 
 [build-system]
 requires = ["hatchling", "hatch-vcs"]
@@ -41,23 +58,19 @@ reportUnusedCallResult = "warning"
 line-length = 100
 fix = true
 lint.select = [
-    "E", # pycodestyle errors
-    "W", # pycodestyle warnings
-    "N", # pep8-naming
-    "F", # flake8
-    "B", # flake8-bugbear
-    "A", # flake8-builtins
-    "SIM", # flake8-simplify
-    "PTH", # flake8-use-pathlib
-    "ERA", # eradicate
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "N",    # pep8-naming
+    "F",    # flake8
+    "B",    # flake8-bugbear
+    "A",    # flake8-builtins
+    "SIM",  # flake8-simplify
+    "PTH",  # flake8-use-pathlib
+    "ERA",  # eradicate
     "FURB", # refurb
-    "UP", # pyupgrade
-    "I", # isort
+    "UP",   # pyupgrade
+    "I",    # isort
 ]
 
 [dependency-groups]
-dev = [
-    "pyright>=1.1.394",
-    "ruff>=0.9.6",
-    "types-requests>=2.32.0.20241016",
-]
+dev = ["pyright>=1.1.394", "ruff>=0.9.6", "types-requests>=2.32.0.20241016"]
