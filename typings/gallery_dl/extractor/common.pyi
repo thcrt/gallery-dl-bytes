@@ -6,7 +6,7 @@ from collections.abc import Collection, Generator
 from re import Match
 from typing import Any, Self, Sequence
 
-from requests import Session
+from requests import Session, Response
 from requests.adapters import HTTPAdapter
 
 from .message import MessageType
@@ -56,25 +56,27 @@ class Extractor:
         self, key: str, key2: str, default: Any = ..., sentinel: Any = ...
     ) -> Any: ...
     def config_deprecated(
-        self, key: str, deprecated: str, default: Any=..., sentinel: Any=..., history: Collection[str]=...
-    ) -> Any:
-        ...
-    def config_accumulate(self, key: str) -> list[Any]:
-        ...
-    def config_instance(self, key: str, default: Any=...) -> Any:
-        ...
+        self,
+        key: str,
+        deprecated: str,
+        default: Any = ...,
+        sentinel: Any = ...,
+        history: Collection[str] = ...,
+    ) -> Any: ...
+    def config_accumulate(self, key: str) -> list[Any]: ...
+    def config_instance(self, key: str, default: Any = ...) -> Any: ...
     def request(
         self,
         url: str | bytes,
-        method: str | bytes=...,
-        session: Session | None=...,
-        retries: float | None=...,
-        retry_codes: Sequence[int]=...,
-        encoding: str | None=...,
-        fatal: bool | None=...,
-        notfound: Any=...,
+        method: str | bytes = ...,
+        session: Session | None = ...,
+        retries: float | None = ...,
+        retry_codes: Sequence[int] = ...,
+        encoding: str | None = ...,
+        fatal: bool | None = ...,
+        notfound: Any = ...,
         **kwargs: dict[str, Any],
-    ): ...
+    ) -> Response: ...
 
     _handle_429 = ...
     def wait(self, seconds=..., until=..., adjust=..., reason=...):  # -> None:

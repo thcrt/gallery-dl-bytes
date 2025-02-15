@@ -1,5 +1,5 @@
 from collections.abc import Callable
-from typing import Self
+from typing import TYPE_CHECKING, Self
 
 from gallery_dl.extractor import find as find_extractor
 from gallery_dl.extractor.common import Extractor
@@ -7,16 +7,19 @@ from gallery_dl.util import SPECIAL_EXTRACTORS, build_extractor_filter
 
 from .downloader import Downloader
 from .file import File
-from .message import QueueMessage, URLMessage, parse_message
+from .message import DirectoryMessage, QueueMessage, URLMessage, parse_message
 
-
-def download(url: str) -> list[File]:
-    return DownloadJob(url).run()
+if TYPE_CHECKING:
+    from gallery_dl.util import KWDict
 
 
 class DownloadJob:
     extractor: Extractor
     visited: set[str]
+    metadata: "KWDict"
+    finished: bool = False
+    _files: tuple[File, ...]
+    _children: list[Self]
 
     def __init__(self, extractor: Extractor | str, parent: Self | None = None) -> None:
         if isinstance(extractor, str):
@@ -28,10 +31,23 @@ class DownloadJob:
         else:
             self.extractor = extractor
 
+        self._files = ()
+        self._children = []
+
+        self.metadata = {}
         self.parent = parent
         self.visited = parent.visited if parent else set()
 
         self.filter_extractor = self._build_extractor_filter()
+
+    @property
+    def files(self) -> tuple[File, ...]:
+        if not self.finished:
+            raise ValueError("Can't access files before running job with `.run()`")
+        files = self._files
+        for child in self._children:
+            files += child.files
+        return files
 
     def _build_extractor_filter(self) -> Callable[[Extractor], bool]:
         clist = self.extractor.config("whitelist")
@@ -47,12 +63,14 @@ class DownloadJob:
 
         return build_extractor_filter(clist, negate, special)
 
-    def run(self) -> list[File]:
+    def run(self) -> None:
         self.extractor.initialize()
-        files: list[File] = []
 
         for message in self.extractor:
             message = parse_message(message)
+
+            if isinstance(message, DirectoryMessage):
+                self.metadata = self.metadata | message.metadata
 
             if isinstance(message, URLMessage):
                 if message.url in self.visited:
@@ -61,7 +79,7 @@ class DownloadJob:
                     self.visited.add(message.url)
 
                 downloader = Downloader(self.extractor)
-                files.append(downloader.download(message.url, message.metadata))
+                self._files += (downloader.download(message.url, message.metadata),)
 
             elif isinstance(message, QueueMessage):
                 if message.url in self.visited:
@@ -83,12 +101,11 @@ class DownloadJob:
                     raise Exception("No extractor :(")  # TODO
 
                 child_job = self.__class__(child_extractor, self)
-                files = files + child_job.run()
+                child_job.run()
+                self._children.append(child_job)
 
             else:
-                # We can probably ignore directory messages, they seem to just exist in order to
-                # make sure the target directory exists for a file download.
-                # Version messages are also not particularly meaningful for us.
+                # We don't need to worry about version messages
                 pass
 
-        return files
+        self.finished = True
