@@ -1,4 +1,12 @@
-from collections.abc import Callable
+from collections.abc import Callable, Collection
+from typing import Any
+
+from gallery_dl.config import set as _set_config
+
+
+def set_config(path: Collection[str], key: str, value: Any) -> None:
+    _set_config(path, key, value)
+
 
 MIME_TYPES = {
     "image/jpeg": "jpg",

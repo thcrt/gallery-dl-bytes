@@ -49,11 +49,7 @@ print(post.metadata.get("author"))
 ### Gallery
 
 ```python
-from gallery_dl_bytes import DownloadJob
-
-url = "https://imgur.com/gallery/dog-3s8hj1j"
-
-job = DownloadJob(url)
+job = DownloadJob("https://imgur.com/gallery/dog-3s8hj1j")
 job.run()
 
 for file in job.files:
@@ -67,11 +63,8 @@ for file in job.files:
 
 ```python
 from pathlib import Path
-from gallery_dl_bytes import DownloadJob
 
-url = "https://www.pexels.com/photo/man-riding-white-surfboard-1005456/"
-
-job = DownloadJob(url)
+job = DownloadJob("https://www.pexels.com/photo/man-riding-white-surfboard-1005456/")
 job.run()
 
 file = job.files[0]
@@ -81,12 +74,19 @@ Path(file.name).write_bytes(file.data)
 ### Access posts without media
 
 ```python
-from gallery_dl_bytes import DownloadJob
-
-url = "https://bsky.app/profile/dril.bsky.social/post/3lia54f7fg22x"
-
-job = DownloadJob(url)
+job = DownloadJob("https://bsky.app/profile/dril.bsky.social/post/3lia54f7fg22x")
 job.run()
 
 print(job.metadata.get("text"))
+```
+
+### Set `gallery-dl` configuration
+
+> [!WARNING]  
+> CNote that not all configuration is supported. Options may be silently ignored. This feature is not yet complete.
+
+```python
+from gallery_dl_bytes import set_config
+
+set_config(("extractor",), "browser", "firefox")
 ```

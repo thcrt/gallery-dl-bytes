@@ -23,7 +23,7 @@ def open_extern():  # -> int:
     ...
 def status():  # -> None:
     ...
-def load(files=..., strict=..., loads=...):  # -> None:
+def load(files: list[str] = ..., strict: bool = ..., loads: Any = ...) -> None:
     """Load JSON configuration files"""
     ...
 
@@ -51,7 +51,9 @@ def accumulate(path, key, conf=...):  # -> list[Any]:
     """Accumulate the values of 'key' along 'path'"""
     ...
 
-def set(path, key, value, conf=...):  # -> None:
+def set(
+    path: Collection[str], key: str, value: Any, conf: Mapping[str, Any] = ...
+) -> None:
     """Set the value of property 'key' for this session"""
     ...
 
