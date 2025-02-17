@@ -1,6 +1,7 @@
 from collections.abc import Callable
 from typing import Self
 
+from gallery_dl.exception import NoExtractorError
 from gallery_dl.extractor import find as find_extractor
 from gallery_dl.extractor.common import Extractor
 from gallery_dl.util import SPECIAL_EXTRACTORS, build_extractor_filter
@@ -23,7 +24,7 @@ class DownloadJob:
         if isinstance(extractor, str):
             found_extractor = find_extractor(extractor)
             if found_extractor is None:
-                raise Exception("No extractor found")
+                raise NoExtractorError(extractor)
             else:
                 self.extractor = found_extractor
         else:
