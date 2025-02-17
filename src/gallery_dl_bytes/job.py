@@ -14,7 +14,7 @@ from .message import DirectoryMessage, QueueMessage, URLMessage, parse_message
 class DownloadJob:
     extractor: Extractor
     visited: set[str]
-    metadata: KWDict
+    _metadata: KWDict
     finished: bool = False
     _files: tuple[File, ...]
     _children: list[Self]
@@ -31,8 +31,8 @@ class DownloadJob:
 
         self._files = ()
         self._children = []
+        self._metadata = {}
 
-        self.metadata = {}
         self.parent = parent
         self.visited = parent.visited if parent else set()
 
@@ -46,6 +46,14 @@ class DownloadJob:
         for child in self._children:
             files += child.files
         return files
+
+    @property
+    def metadata(self) -> KWDict:
+        return self._metadata | {
+            "category": self.extractor.category,
+            "subcategory": self.extractor.subcategory,
+            "basecategory": self.extractor.basecategory,
+        }
 
     def _build_extractor_filter(self) -> Callable[[Extractor], bool]:
         clist = self.extractor.config("whitelist")
@@ -68,7 +76,7 @@ class DownloadJob:
             message = parse_message(message)
 
             if isinstance(message, DirectoryMessage):
-                self.metadata = self.metadata | message.metadata
+                self._metadata = self._metadata | message.metadata
 
             if isinstance(message, URLMessage):
                 if message.url in self.visited:
