@@ -1,22 +1,20 @@
 from collections.abc import Callable
-from typing import TYPE_CHECKING, Self
+from typing import Self
 
 from gallery_dl.extractor import find as find_extractor
 from gallery_dl.extractor.common import Extractor
 from gallery_dl.util import SPECIAL_EXTRACTORS, build_extractor_filter
 
 from .downloader import Downloader
+from .extra_types import KWDict
 from .file import File
 from .message import DirectoryMessage, QueueMessage, URLMessage, parse_message
-
-if TYPE_CHECKING:
-    from gallery_dl.util import KWDict
 
 
 class DownloadJob:
     extractor: Extractor
     visited: set[str]
-    metadata: "KWDict"
+    metadata: KWDict
     finished: bool = False
     _files: tuple[File, ...]
     _children: list[Self]

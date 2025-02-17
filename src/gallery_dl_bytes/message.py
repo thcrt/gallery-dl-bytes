@@ -1,11 +1,8 @@
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
 
 from gallery_dl.extractor.message import Message
 
-if TYPE_CHECKING:
-    from gallery_dl.extractor.message import MessageType
-    from gallery_dl.util import KWDict
+from .extra_types import KWDict, MessageType
 
 type ParsedMessage = VersionMessage | DirectoryMessage | URLMessage | QueueMessage
 
@@ -17,22 +14,22 @@ class VersionMessage:
 
 @dataclass
 class DirectoryMessage:
-    metadata: "KWDict"
+    metadata: KWDict
 
 
 @dataclass
 class URLMessage:
     url: str
-    metadata: "KWDict"
+    metadata: KWDict
 
 
 @dataclass
 class QueueMessage:
     url: str
-    metadata: "KWDict"
+    metadata: KWDict
 
 
-def parse_message(message: "MessageType") -> ParsedMessage:
+def parse_message(message: MessageType) -> ParsedMessage:
     if message[0] == Message.Version:
         return VersionMessage(message[1])
     elif message[0] == Message.Directory:

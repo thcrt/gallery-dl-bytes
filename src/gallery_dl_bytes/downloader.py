@@ -5,7 +5,7 @@ from pathlib import PurePath
 from ssl import SSLError
 from textwrap import dedent
 from time import monotonic, sleep
-from typing import TYPE_CHECKING, Any, cast
+from typing import Any, cast
 
 import gallery_dl.config
 from gallery_dl.extractor.common import Extractor
@@ -16,10 +16,8 @@ from requests import Session
 from requests.exceptions import ConnectionError as RequestsConnectionError
 from requests.exceptions import RequestException, Timeout
 
+from .extra_types import KWDict
 from .file import File
-
-if TYPE_CHECKING:
-    from gallery_dl.util import KWDict
 
 
 @dataclass
@@ -91,7 +89,7 @@ class DownloaderSettings:
 
 class Downloader:
     session: Session
-    _formatter: Callable[["KWDict"], str]
+    _formatter: Callable[[KWDict], str]
 
     def __init__(self, extractor: Extractor) -> None:
         self.session = extractor.session
@@ -118,10 +116,10 @@ class Downloader:
     def _interpolate_config(self, key: str, default: Any = None) -> Any:
         return gallery_dl.config.interpolate(("downloader", "http"), key, default)
 
-    def build_filename(self, metadata: "KWDict") -> PurePath:
+    def build_filename(self, metadata: KWDict) -> PurePath:
         return PurePath(self._formatter(metadata))
 
-    def download(self, url: str, metadata: "KWDict") -> File:
+    def download(self, url: str, metadata: KWDict) -> File:
         tries = 0
 
         while True:
