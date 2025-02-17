@@ -49,11 +49,14 @@ class DownloadJob:
 
     @property
     def metadata(self) -> KWDict:
-        return self._metadata | {
+        metadata = self._metadata | {
             "category": self.extractor.category,
             "subcategory": self.extractor.subcategory,
             "basecategory": self.extractor.basecategory,
         }
+        for child in self._children:
+            metadata = metadata | child.metadata
+        return metadata
 
     def _build_extractor_filter(self) -> Callable[[Extractor], bool]:
         clist = self.extractor.config("whitelist")
